@@ -2,8 +2,8 @@
  * Project Name		:	Board
  * 
  * File Name		:	OnSite.java
- * Revision			:	0.2
- * Date				:	2021.08.04
+ * Revision			:	0.3
+ * Date				:	2021.08.05
  * Author			:	Lee KwangHyo
  * 
  */
@@ -40,9 +40,7 @@ public class OnSite {
 		while(flag){
 			PrintStatus.print(status, memberTable, postTable, currentPost);
 			input = ScanUtil.nextInt();
-			if(takeAction(status, input)){
-				flag = updateStatus(status, input);
-			}
+			flag = updateStatus(status, input);
 			System.out.println(status);
 		}
 	}
@@ -50,10 +48,16 @@ public class OnSite {
 	boolean updateStatus(Status status, int input){
 		switch(status){
 		case LOGIN :
-			if(input == 1 || input == 3){
-				this.status = Status.valueOf("BOARD");
+			if(input == 1){
+				if(login(0)){
+					this.status = Status.valueOf("BOARD");
+				}
 			}else if(input == 2){
 				this.status = Status.valueOf("N_SIGN_UP");
+			}else if(input == 3){
+				if(login(1)){
+					this.status = Status.valueOf("BOARD");
+				}
 			}else if(input == 4){
 				this.status = Status.valueOf("A_SIGN_UP");
 			}else if(input == 5){
@@ -65,7 +69,9 @@ public class OnSite {
 			
 		case N_SIGN_UP :
 			if(input == 1){
-				this.status = Status.valueOf("LOGIN");
+				if(signIn(0)){
+					this.status = Status.valueOf("LOGIN");
+				}
 			}else if(input == 2){
 				this.status = Status.valueOf("LOGIN");
 			}
@@ -73,7 +79,9 @@ public class OnSite {
 			
 		case A_SIGN_UP :
 			if(input == 1){
-				this.status = Status.valueOf("LOGIN");
+				if(signIn(1)){
+					this.status = Status.valueOf("LOGIN");
+				}
 			}else if(input == 2){
 				this.status = Status.valueOf("LOGIN");
 			}
@@ -81,7 +89,7 @@ public class OnSite {
 			
 		case F_PASSWORD :
 			if(input == 1){
-				
+				findPassword();
 			}else if(input == 2){
 				this.status = Status.valueOf("LOGIN");
 			}
@@ -89,27 +97,39 @@ public class OnSite {
 			
 		case BOARD :
 			if(input == 1){
-				this.status = Status.valueOf("POST_DETAIL");
+				if(selectPost()){
+					this.status = Status.valueOf("POST_DETAIL");
+				}
 			}else if(input == 2){
 				this.status = Status.valueOf("POST_ADD");
 			}else if(input == 3){
-				this.status = Status.valueOf("LOGIN");
+				if(logOut()){
+					this.status = Status.valueOf("LOGIN");
+				}
 			}
 			break;
 			
 		case POST_DETAIL :
 			if(input == 1){
-				this.status = Status.valueOf("POST_CHANGE");
+				if(accessGranted()){
+					this.status = Status.valueOf("POST_CHANGE");
+				}
 			}else if(input == 2){
-				this.status = Status.valueOf("POST_DELETE");
+				if(accessGranted()){
+					this.status = Status.valueOf("POST_DELETE");
+				}
 			}else if(input == 3){
-				this.status = Status.valueOf("BOARD");
+				if(backBoard()){
+					this.status = Status.valueOf("BOARD");
+				}
 			}
 			break;
 			
 		case POST_ADD :
 			if(input == 1){
-				this.status = Status.valueOf("POST_DETAIL");
+				if(addPost()){
+					this.status = Status.valueOf("POST_DETAIL");
+				}
 			}else if(input == 2){
 				this.status = Status.valueOf("BOARD");
 			}
@@ -117,7 +137,7 @@ public class OnSite {
 			
 		case POST_CHANGE :
 			if(input == 1){
-				
+				changePost();
 			}else if(input == 2){
 				this.status = Status.valueOf("POST_DETAIL");
 			}
@@ -125,7 +145,9 @@ public class OnSite {
 			
 		case POST_DELETE :
 			if(input == 1){
-				this.status = Status.valueOf("BOARD");
+				if(deletePost()){
+					this.status = Status.valueOf("BOARD");
+				}
 			}else if(input == 2){
 				this.status = Status.valueOf("POST_DETAIL");
 			}
@@ -278,84 +300,4 @@ public class OnSite {
 		}
 	}
 	
-	boolean takeAction(Status status, int input){
-		boolean result = true;
-		switch(status){
-		case LOGIN :
-			
-			if(input == 1){
-				return login(0);
-			}else if(input == 2){
-			}else if(input == 3){
-				return login(1);
-			}else if(input == 4){
-			}else if(input == 5){
-			}else if(input == 6){
-
-			}
-			break;
-			
-		case N_SIGN_UP :
-			if(input == 1){
-				return signIn(0);
-			}else if(input == 2){
-			}
-			break;
-			
-		case A_SIGN_UP :
-			if(input == 1){
-				return signIn(1);
-			}else if(input == 2){
-			}
-			break;
-			
-		case F_PASSWORD :
-			if(input == 1){
-				return findPassword();
-			}else if(input == 2){
-			}
-			break;
-			
-		case BOARD :
-			if(input == 1){
-				return selectPost();
-			}else if(input == 2){
-			}else if(input == 3){
-				return logOut();
-			}
-			break;
-			
-		case POST_DETAIL :
-			if(input == 1){
-				return accessGranted();
-			}else if(input == 2){
-				return accessGranted();
-			}else if(input == 3){
-				return backBoard();
-			}
-			break;
-			
-		case POST_ADD :
-			if(input == 1){
-				return addPost();
-			}else if(input == 2){
-			}
-			break;
-			
-		case POST_CHANGE :
-			if(input == 1){
-				return changePost();
-			}else if(input == 2){
-			}
-			break;
-			
-		case POST_DELETE :
-			if(input == 1){
-				return deletePost();
-			}else if(input == 2){
-			}
-			break;
-		}
-		return result;
-	}
 }
